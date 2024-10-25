@@ -28,7 +28,7 @@ jobs:
           pip install django
           python3 manage.py runserver &  # サーバーをバックグラウンドで起動
           # サーバーが立ち上がるまで待機
-          until curl -s http://127.0.0.1:8000/emfood/ > /dev/null; do
+          until curl -s http://127.0.0.1:8000/ > /dev/null; do
             echo "Waiting for Django server to be up..."
             sleep 5
           done
@@ -40,5 +40,5 @@ jobs:
           echo "nmap↓"
           nmap -sV -T4 -p 8000 127.0.0.1
           echo "sqlmap↓"
-          sqlmap -u "http://127.0.0.1:8000/admin/login/?next=/admin/" --level=5 --risk=3 --random-agent --tamper=space2comment"
+          sqlmap -u "http://127.0.0.1:8000/" --level=5 --risk=3 --random-agent --tamper=space2comment"
 # kali-linux-default
