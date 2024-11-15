@@ -37,7 +37,7 @@ def register(request):
         form = Emfoodadd(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(to='/emfood')
+            return redirect(to='/')
         else:
             message = '登録に失敗しました'
     
