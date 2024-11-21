@@ -45,9 +45,10 @@ jobs:
           echo "nmap↓"
           nmap -sV -T4 -p 7000-9000 127.0.0.1 -oN nmap_report.txt
           echo "sqlmap↓"
-          sqlmap -u "http://127.0.0.1:8000/" --level=5 --risk=3 --random-agent --tamper=space2comment"
+          sqlmap -u "http://127.0.0.1:8000/" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/sqlmap_output"
       
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
-          path: /root/.local/share/sqlmap/output/*.csv
+          name: sql_result
+          path: ${{ runner.temp }}/sqlmap_output/*.csv
