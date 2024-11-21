@@ -51,3 +51,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: nmap_report.txt
+          path: /root/.local/share/sqlmap/output/*.csv
