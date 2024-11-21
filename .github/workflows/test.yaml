@@ -37,7 +37,7 @@ jobs:
           echo "Django server is up and running."
       
       - name: New file create
-        touch nmap_report.xml
+        run: touch nmap_report.xml
 
       - name: Run Kali Linux Docker Container
         run: |
