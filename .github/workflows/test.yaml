@@ -45,7 +45,7 @@ jobs:
           sqlmap -u "http://127.0.0.1:8000/" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output
           echo "cracking↓"
           apt update && apt install -y seclists
-          hydra -l admin -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1:8000 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=invalid" -o ${{ runner.temp }}/output/passwords.txt
+          hydra -l admin -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1:8000 http-post-form "/admin/login/?next=/admin/:username=^USER^&password=^PASS^:F=invalid" -o ${{ runner.temp }}/output/passwords.txt
           '
       
       - name: 'Upload Artifact'
