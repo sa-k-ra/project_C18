@@ -42,11 +42,7 @@ jobs:
           echo "nmap↓"
           sudo nmap -sV -T4 -p 7000-9000 127.0.0.1 -oN ${{ runner.temp }}/output/nmap_report.txt -oX ${{ runner.temp }}/output/nmap_report.xml
           echo "sqlmap↓"
-          sqlmap -u "http://127.0.0.1:8000/" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output
-          echo "clakking↓"
-          apt update
-          apt install seclists
-          hydra -l emfood -P /usr/share/seclists/passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login/?next=/admin/login:username=^USER^&password=^PASS^:F=incorrect" -o ${{ runner.temp }}/output/passward.txt"
+          sqlmap -u "http://127.0.0.1:8000/" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output"
       
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
