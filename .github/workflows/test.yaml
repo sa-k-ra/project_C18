@@ -46,6 +46,11 @@ jobs:
           echo "cracking↓"
           apt update && apt install -y seclists
           hydra -l admin -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
+          echo "XSS"
+          git clone https://github.com/s0md3v/XSStrike
+          cd XSStrike
+          python3 xsstrike.py
+          python3 xsstrike.py -u "http://127.0.0.1:8000/"
           '
       
       - name: 'Upload Artifact'
