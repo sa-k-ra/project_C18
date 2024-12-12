@@ -42,7 +42,7 @@ jobs:
           echo "nmap↓"
           sudo nmap -sV -T4 -p 7000-9000 127.0.0.1 -oN ${{ runner.temp }}/output/nmap_report.txt -oX ${{ runner.temp }}/output/nmap_report.xml
           echo "sqlmap↓"
-          sqlmap -u "http://127.0.0.1:8000/register" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output
+          sqlmap -o -u "http://127.0.0.1:8000/register" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output
           echo "cracking↓"
           apt update && apt install -y seclists
           hydra -l admin -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
