@@ -1,7 +1,7 @@
 name: Pentest with Docker
 
 on:
-  - workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   pentest:
