@@ -42,7 +42,7 @@
                             {% if now > food.limit_date %} 
                                 <div class="food-list" style="background: #bb0000">
                                     <div class='food-name'>{{ food.name }}</div>
-                                    <div class='food-num'>{{ food.num}}</div>
+                                    <div class='food-num'>{{ food.num }}</div>
                                     <div class='food-ex'>{{ food.limit_date }}</div>
                                 </div>
                             {% elif month_later_1 > food.limit_date %}
