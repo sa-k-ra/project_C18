@@ -32,7 +32,7 @@ jobs:
           echo "Django server is up and running."
 
       - name: Create password file
-        run: echo "tginetC18" > password.txt
+        run: echo "tginetC18" > passwords.txt
 
       - name: Verify password file
         run: |
