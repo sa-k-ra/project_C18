@@ -36,7 +36,7 @@ jobs:
 
       - name: Verify password file
         run: |
-          ls -l passwords.txt
+          sudo ls -l passwords.txt
           sudo cat passwards.txt
 
       - name: Run Kali Linux Docker Container
