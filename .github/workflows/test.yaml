@@ -1,11 +1,6 @@
 name: Pentest with Docker
 
   on:
-    push:
-      branches:
-        - main
-        - test
-  
     workflow_dispatch:
 
   jobs:
