@@ -58,7 +58,7 @@ jobs:
         with:
           name: vulnerability_report
           path: ${{ runner.temp }}/output/*
-          '
+          
       
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
