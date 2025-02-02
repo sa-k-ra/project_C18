@@ -1,50 +1,44 @@
 name: Pentest with Docker
 
-  on:
-    workflow_dispatch:
+on:
+  workflow_dispatch:
 
-  jobs:
-    pentest:
-      runs-on: ubuntu-latest
+jobs:
+  pentest:
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-        - name: Set up Docker
-          uses: docker/setup-buildx-action@v3
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
 
-        - name: Setup python 
-          uses: actions/setup-python@v5 
-          with:
-            python-version: "3.12" 
-        - name: Install Python dependencies
-          working-directory: ./tginet_C18
-          run: |
-            pip install django
-            python3 manage.py runserver &  # サーバーをバックグラウンドで起動
-            # サーバーが立ち上がるまで待機
-            until curl -s http://127.0.0.1:8000/ > /dev/null; do
-              echo "Waiting for Django server to be up..."
-              sleep 5
-            done
-            echo "Django server is up and running."
-        - name: Run Kali Linux Docker Container
-          run: |
-            docker run --rm --privileged --network host -e DEBIAN_FRONTEND=noninteractive -v ${{ runner.temp }}/output:${{ runner.temp }}/output am2501/kalidef /bin/bash -c '
-            echo "nmap↓"
-            sudo nmap -sV -T4 -p 7000-9000 127.0.0.1 -oN ${{ runner.temp }}/output/nmap_report.txt -oX ${{ runner.temp }}/output/nmap_report.xml
-            echo "sqlmap↓"
-            sqlmap -o -u "http://127.0.0.1:8000" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output
-            echo "cracking↓"
-            apt update && apt install -y seclists
-            hydra -l emfood -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F= スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
-            echo "tginetC18" > password_vulnerability.txt
-            hydra -l admin -P password_vulnerability.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt
-            '
-      # ワークフロー4 
-        - name: 'Upload Artifact'
-          uses: actions/upload-artifact@v4
-          with:
-            name: vulnerability_report
-            path: ${{ runner.temp }}/output/*
+      - name: Setup python # ワークフローのセクションごとに設定する名前。特に設定する必要はないが、どこでエラーが起きているかを把握する為にも設定しておいた方が良い。
+        uses: actions/setup-python@v5 # Pythonのセットアップ
+        with:
+          python-version: "3.12" # Pythonのバージョン指定
+      
+      - name: Install Python dependencies
+        working-directory: ./tginet_C18
+        run: |
+          pip install django
+          python3 manage.py runserver &  # サーバーをバックグラウンドで起動
+          # サーバーが立ち上がるまで待機
+          until curl -s http://127.0.0.1:8000/ > /dev/null; do
+            echo "Waiting for Django server to be up..."
+            sleep 5
+          done
+          echo "Django server is up and running."
+      - name: Run Kali Linux Docker Container
+        run: |
+          curl -v http://127.0.0.1:8000/
+          docker run --rm --privileged --network host -e DEBIAN_FRONTEND=noninteractive -v $(pwd)/password.txt:/root/password.txt -v ${{ runner.temp }}/output:${{ runner.temp }}/output am2501/kalidef /bin/bash -c '
+          hydra -l emfood -P /root/password.txt -t 4 -c 30 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
+          '
+      
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vulnerability_report
+          path: ${{ runner.temp }}/output/*
