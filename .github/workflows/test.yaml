@@ -7,23 +7,22 @@ name: Pentest with Docker
         - test
   
     workflow_dispatch:
-  # ワークフローを実行する環境の設定
+
   jobs:
     pentest:
       runs-on: ubuntu-latest
-      # 以下, ワークフロー
+
       steps:
-      # 実行環境に GitHub に格納されているデータをコピーする                  
         - name: Checkout code
           uses: actions/checkout@v4
-      # Docker をセットアップする
+
         - name: Set up Docker
           uses: docker/setup-buildx-action@v3
-      # ワークフロー１
+
         - name: Setup python 
-          uses: actions/setup-python@v5 # Pythonのセットアップ
+          uses: actions/setup-python@v5 
           with:
-            python-version: "3.12" # Pythonのバージョン指定
+            python-version: "3.12" 
         - name: Install Python dependencies
           working-directory: ./tginet_C18
           run: |
@@ -37,18 +36,14 @@ name: Pentest with Docker
             echo "Django server is up and running."
         - name: Run Kali Linux Docker Container
           run: |
-            # ワークフロー2 
             docker run --rm --privileged --network host -e DEBIAN_FRONTEND=noninteractive -v ${{ runner.temp }}/output:${{ runner.temp }}/output am2501/kalidef /bin/bash -c '
-            # ワークフロー3 
             echo "nmap↓"
             sudo nmap -sV -T4 -p 7000-9000 127.0.0.1 -oN ${{ runner.temp }}/output/nmap_report.txt -oX ${{ runner.temp }}/output/nmap_report.xml
             echo "sqlmap↓"
             sqlmap -o -u "http://127.0.0.1:8000" --level=5 --risk=3 --random-agent --tamper=space2comment --output-dir=${{ runner.temp }}/output
             echo "cracking↓"
-            # 脆弱性なし
             apt update && apt install -y seclists
             hydra -l emfood -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F= スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
-            # 脆弱性あり
             echo "tginetC18" > password_vulnerability.txt
             hydra -l admin -P password_vulnerability.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt
             '
