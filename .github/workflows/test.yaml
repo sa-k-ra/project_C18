@@ -49,7 +49,7 @@ jobs:
           hydra -l emfood -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
           # 脆弱性あり
           echo "tginetC18" > password_vulnerability.txt
-          hydra -l emfood -P pass.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt          
+          hydra -l emfood -P password_vulnerability.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt          
           '
 
       # ワークフロー4
