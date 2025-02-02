@@ -18,6 +18,6 @@ from django.urls import include, path
 from django.shortcuts import redirect  # ここを追加
 
 urlpatterns = [
-    path("emfood/", include("emfood.urls")),
+    path("", include("emfood.urls")),
     path("admin/", admin.site.urls),
 ]
