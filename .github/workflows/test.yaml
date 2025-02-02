@@ -5,22 +5,18 @@ on:
     branch:
       - main
   workflow_dispatch:
-
 # ワークフローを実行する環境の設定
 jobs:
   pentest:
     runs-on: ubuntu-latest
-
     #以下ワークフロー
     steps:
       # 実行環境にGitHub に格納されているデータをコピーする
       - name: Checkout code
         uses: actions/checkout@v4
-
       # Docker をセットアップする
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
-
       # ワークフロー１
       - name: Setup python # ワークフローのセクションごとに設定する名前。特に設定する必要はないが、どこでエラーが起きているかを把握する為にも設定しておいた方が良い。
         uses: actions/setup-python@v5 # Pythonのセットアップ
@@ -53,7 +49,7 @@ jobs:
           hydra -l emfood -P /usr/share/seclists/Passwords/xato-net-10-million-passwords-10000.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords.txt
           # 脆弱性あり
           echo "tginetC18" > password_vulnerability.txt
-          hydra -l admin -P password_vulnerability.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt          
+          hydra -l emfood -P pass.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt          
           '
 
       # ワークフロー4
