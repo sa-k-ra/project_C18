@@ -39,7 +39,7 @@ jobs:
           # ワークフロー2
           docker run --rm --privileged --network host -e DEBIAN_FRONTEND=noninteractive -v $(pwd)/password.txt:/root/password.txt -v ${{ runner.temp }}/output:${{ runner.temp }}/output am2501/kalidef /bin/bash -c '
           echo "tginetC18" > password_vulnerability.txt
-          hydra -l emfood -P pass.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt          
+          hydra -l emfood -P password_vulnerability.txt 127.0.0.1 http-post-form "/admin/login:username=^USER^&password=^PASS^:F=スタッフアカウントの正しいユーザー名とパスワードを入力してください。どちらのフィールドも大文字と小文字は区別されます。" -s 8000 -o ${{ runner.temp }}/output/passwords_vulnerability.txt          
           '
 
       # ワークフロー4
